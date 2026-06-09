@@ -1,6 +1,24 @@
 {
+  "name": "tp2-proyectofinal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "dev": "node --watch .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AgusBorgo/TP2-ProyectoFinal.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AgusBorgo/TP2-ProyectoFinal/issues"
+  },
+  "homepage": "https://github.com/AgusBorgo/TP2-ProyectoFinal#readme",
   "dependencies": {
-    "sequelize": "^6.37.8",
-    "tedious": "^19.2.1"
+    "express": "^5.2.1"
   }
 }
