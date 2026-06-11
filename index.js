@@ -1,13 +1,21 @@
 import express from 'express';
+import router from './routes/router.js';
+import logger from './middlewares/logger.js';
+import errorHandler from './middlewares/errorHandler.js';
 
 const app = express();
-console.log(`app:`, app);
+const PORT = 8000;
 
-app.get("/", (req, res) => {
-    console.log(`req:`, req);
-    res.status(200).send("Hello World");
-});
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.listen(8000, () =>{
-    console.log('Server ok in port 8000')
+app.use(logger);
+
+
+app.use(router);
+
+app.use(errorHandler);
+
+app.listen(PORT, () => {
+  console.log(`Server ok in port http://localhost:${PORT}`);
 });
