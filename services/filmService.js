@@ -1,14 +1,27 @@
-let films = [
-  { id: 1, titulo: "Avengers: Endgame", genero: "Acción" },
-  { id: 2, titulo: "Toy Story 4", genero: "Animación" }
-];
+import { Film } from '../models/index.js';
 
-export function listFilms() {
-  return films;
+export async function listFilms() {
+  return await Film.findAll();
 }
 
-export function addFilm(film) {
-  film.id = films.length + 1;
-  films.push(film);
+export async function getFilmById(id) {
+  return await Film.findByPk(id);
+}
+
+export async function addFilm(film) {
+  return await Film.create(film);
+}
+
+export async function updateFilm(id, data) {
+  const film = await Film.findByPk(id);
+  if (!film) return null;
+  await film.update(data);
   return film;
+}
+
+export async function deleteFilm(id) {
+  const film = await Film.findByPk(id);
+  if (!film) return false;
+  await film.destroy();
+  return true;
 }
