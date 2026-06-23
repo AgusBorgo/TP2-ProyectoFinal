@@ -1,38 +1,27 @@
-import express from 'express';
-import 'dotenv/config';
+import express from "express";
+import morgan from "morgan";
+import router from "./routes/router.js";
+import { notFound } from "./middlewares/notFound.js";
+import errorHandler from "./middlewares/errorHandler.js";
+import sequelize from "./connection/sequelize.js";
+import { SERVER_PORT } from "./config/config.js";
 
-import router from './routes/router.js';
-import logger from './middlewares/logger.js';
-import errorHandler from './middlewares/errorHandler.js';
-import { sequelize } from './models/index.js';
+// Importar los modelos para que se registren las relaciones
+import "./Models/index.js";
 
 const app = express();
-const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use(logger);
+app.use(morgan("dev"));
 
 app.use(router);
 
+await sequelize.sync({ alter: false });
+
+app.use(notFound);
 app.use(errorHandler);
 
-// Conectar a la base de datos y arrancar el servidor
-async function start() {
-  try {
-    await sequelize.authenticate();
-    console.log('Conexion a PostgreSQL exitosa');
-
-    await sequelize.sync();
-    console.log('Tablas sincronizadas');
-
-    app.listen(PORT, () => {
-      console.log(`Server ok in port http://localhost:${PORT}`);
-    });
-  } catch (err) {
-    console.error('No se pudo iniciar el servidor:', err.message);
-  }
-}
-
-start();
+app.listen(SERVER_PORT, () => {
+  console.log(`Server ok in port http://localhost:${SERVER_PORT}`);
+});
