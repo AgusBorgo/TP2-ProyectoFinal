@@ -1,27 +1,41 @@
-import { Film } from '../models/index.js';
+class FilmService {
+  constructor(film) {
+    this.film = film;
+  }
 
-export async function listFilms() {
-  return await Film.findAll();
+  getAllFilms = async () => {
+    const films = await this.film.findAll({
+      order: [["titulo", "ASC"]],
+    });
+    return films;
+  };
+
+  getFilmById = async (id) => {
+    const film = await this.film.findByPk(id);
+    if (!film) throw new Error("Pelicula no encontrada");
+    return film;
+  };
+
+  createFilm = async ({ titulo, genero, horario, duracion }) => {
+    if (!titulo) throw new Error("El titulo es requerido");
+    if (!genero) throw new Error("El genero es requerido");
+    const film = await this.film.create({ titulo, genero, horario, duracion });
+    return film;
+  };
+
+  updateFilm = async (id, data) => {
+    const film = await this.film.findByPk(id);
+    if (!film) throw new Error("Pelicula no encontrada");
+    await film.update(data);
+    return film;
+  };
+
+  deleteFilm = async (id) => {
+    const film = await this.film.findByPk(id);
+    if (!film) throw new Error("Pelicula no encontrada");
+    await film.destroy();
+    return { id };
+  };
 }
 
-export async function getFilmById(id) {
-  return await Film.findByPk(id);
-}
-
-export async function addFilm(film) {
-  return await Film.create(film);
-}
-
-export async function updateFilm(id, data) {
-  const film = await Film.findByPk(id);
-  if (!film) return null;
-  await film.update(data);
-  return film;
-}
-
-export async function deleteFilm(id) {
-  const film = await Film.findByPk(id);
-  if (!film) return false;
-  await film.destroy();
-  return true;
-}
+export default FilmService;
