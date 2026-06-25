@@ -1,27 +1,37 @@
-import { Film } from '../models/index.js';
+class FilmService {
+  constructor(filmModel) {
+    this.film = filmModel;
+  }
 
-export async function listFilms() {
-  return await Film.findAll();
+  async getAllFilms() {
+    return await this.film.findAll({
+      attributes: ["id", "titulo", "genero", "horario", "duracion"],
+    });
+  }
+
+  async getFilmById(id) {
+    return await this.film.findOne({
+      where: { id },
+      attributes: ["id", "titulo", "genero", "horario", "duracion"],
+    });
+  }
+
+  async createFilm({ titulo, genero, horario, duracion }) {
+    return await this.film.create({ titulo, genero, horario, duracion });
+  }
+
+  async updateFilm(id, data) {
+    const film = await this.film.findByPk(id);
+    if (!film) throw new Error("Película no encontrada");
+    return await film.update(data);
+  }
+
+  async deleteFilm(id) {
+    const film = await this.film.findByPk(id);
+    if (!film) throw new Error("Película no encontrada");
+    await film.destroy();
+    return { message: "Película eliminada correctamente" };
+  }
 }
 
-export async function getFilmById(id) {
-  return await Film.findByPk(id);
-}
-
-export async function addFilm(film) {
-  return await Film.create(film);
-}
-
-export async function updateFilm(id, data) {
-  const film = await Film.findByPk(id);
-  if (!film) return null;
-  await film.update(data);
-  return film;
-}
-
-export async function deleteFilm(id) {
-  const film = await Film.findByPk(id);
-  if (!film) return false;
-  await film.destroy();
-  return true;
-}
+export default FilmService;

@@ -1,35 +1,57 @@
-import * as filmService from '../services/filmService.js';
-
-export async function getAllFilms(req, res) {
-  const films = await filmService.listFilms();
-  res.json(films);
-}
-
-export async function getFilmById(req, res) {
-  const film = await filmService.getFilmById(req.params.id);
-  if (!film) {
-    return res.status(404).json({ error: 'Pelicula no encontrada' });
+class FilmController {
+  constructor(service) {
+    this.filmService = service;
   }
-  res.json(film);
+
+  getAllFilms = async (req, res) => {
+    try {
+      const films = await this.filmService.getAllFilms();
+      res.status(200).send({ success: true, message: films });
+    } catch (error) {
+      res.status(400).send({ success: false, message: error.message });
+    }
+  };
+
+  getFilmById = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const film = await this.filmService.getFilmById(id);
+      res.status(200).send({ success: true, message: film });
+    } catch (error) {
+      res.status(400).send({ success: false, message: error.message });
+    }
+  };
+
+  createFilm = async (req, res) => {
+    try {
+      const { titulo, genero, horario, duracion } = req.body;
+      if (!titulo) throw new Error("El título es obligatorio");
+      const film = await this.filmService.createFilm({ titulo, genero, horario, duracion });
+      res.status(200).send({ success: true, message: film });
+    } catch (error) {
+      res.status(400).send({ success: false, message: error.message });
+    }
+  };
+
+  updateFilm = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const film = await this.filmService.updateFilm(id, req.body);
+      res.status(200).send({ success: true, message: film });
+    } catch (error) {
+      res.status(400).send({ success: false, message: error.message });
+    }
+  };
+
+  deleteFilm = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const result = await this.filmService.deleteFilm(id);
+      res.status(200).send({ success: true, message: result });
+    } catch (error) {
+      res.status(400).send({ success: false, message: error.message });
+    }
+  };
 }
 
-export async function createFilm(req, res) {
-  const film = await filmService.addFilm(req.body);
-  res.status(201).json({ mensaje: "Película creada", film });
-}
-
-export async function updateFilm(req, res) {
-  const film = await filmService.updateFilm(req.params.id, req.body);
-  if (!film) {
-    return res.status(404).json({ error: 'Pelicula no encontrada' });
-  }
-  res.json({ mensaje: 'Pelicula actualizada', film });
-}
-
-export async function deleteFilm(req, res) {
-  const ok = await filmService.deleteFilm(req.params.id);
-  if (!ok) {
-    return res.status(404).json({ error: 'Pelicula no encontrada' });
-  }
-  res.status(204).send();
-}
+export default FilmController;

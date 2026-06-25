@@ -1,10 +1,10 @@
-import { Router } from 'express';
-import filmRouter from './filmRouter.js';
-import userRouter from './userRouter.js';
+import { Router } from "express";
+import userRoutes from "./userRoutes.js";
+import filmRoutes from "./filmRoutes.js";
 
 const router = Router();
 
-router.use('/films', filmRouter);
-router.use('/users', userRouter);
+router.use("/users", userRoutes);
+router.use("/films", filmRoutes);
 
 export default router;
